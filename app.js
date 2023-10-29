@@ -8,21 +8,30 @@ const toursInfo = JSON.parse(
     fs.readFileSync('./dev-data/data/tours-simple.json'));
 
 
-app.get('/', (req, res) => {
-    res.status(200).send("Home Page.");
-});
-
-
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
     res.status(200).json({
         status: 'success', data: {
             tours: toursInfo
         }
     });
-});
+}
 
+const createTour = (req, res) => {
+    const newID = toursInfo.length + 1;
+    const newTour = Object.assign({ id: newID, }, req.body);
+    toursInfo.push(newTour);
+    fs.writeFile('./dev-data/data/tours-simple.json', JSON.stringify(toursInfo), (err, data) => {
+        res.status(201).json({
+            status: 'success',
+            data: {
+                tours: newTour,
+            }
+        });
+    });
 
-app.get('/api/v1/tours/:id', (req, res) => {
+}
+
+const getTourByID = (req, res) => {
     const id = req.params.id * 1;
     const tourInfoByID = toursInfo.find(item => item.id === id);
 
@@ -39,25 +48,13 @@ app.get('/api/v1/tours/:id', (req, res) => {
             tour: tourInfoByID,
         }
     });
-});
+}
 
 
-app.post('/api/v1/tours', (req, res) => {
-    const newID = toursInfo.length + 1;
-    const newTour = Object.assign({ id: newID, }, req.body);
-    toursInfo.push(newTour);
-    fs.writeFile('./dev-data/data/tours-simple.json', JSON.stringify(toursInfo), (err, data) => {
-        res.status(201).json({
-            status: 'success',
-            data: {
-                tours: newTour,
-            }
-        });
-    });
 
-});
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+
+const updateTour = (req, res) => {
     const id = req.params.id * 1;
     const tourInfoByID = toursInfo.find(item => item.id === id);
 
@@ -74,10 +71,10 @@ app.patch('/api/v1/tours/:id', (req, res) => {
             tour: '<Updated tour here>'
         }
     });
-});
+}
 
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req, res) => {
     const id = req.params.id * 1;
     const tourInfoByID = toursInfo.find(item => item.id === id);
 
@@ -92,7 +89,24 @@ app.delete('/api/v1/tours/:id', (req, res) => {
         status: "success",
         data: null,
     });
-});
+}
+
+
+app.route('/api/v1/tours')
+    .get(getAllTours)
+    .post(createTour);
+
+app.route('/api/v1/tours/:id')
+    .get(getTourByID)
+    .patch(updateTour)
+    .delete(deleteTour);
+
+
+
+
+
+
+
 
 
 const port = 3000;
