@@ -96,25 +96,59 @@ const deleteTour = (req, res) => {
     });
 }
 
+const getAllUsers = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This api route is not defined yet!'
+    });
+}
+const createUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This api route is not defined yet!'
+    });
+}
+const getUserByID = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This api route is not defined yet!'
+    });
+}
 
-app.route('/api/v1/tours')
+const updateUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This api route is not defined yet!'
+    });
+}
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This api route is not defined yet!'
+    });
+}
+
+app
+    .route('/api/v1/tours')
     .get(getAllTours)
     .post(createTour);
 
-//creating middleware
-app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
-    next();
-});
-
-app.route('/api/v1/tours/:id')
+app
+    .route('/api/v1/tours/:id')
     .get(getTourByID)
     .patch(updateTour)
     .delete(deleteTour);
 
+app
+    .route('/api/v1/users')
+    .get(getAllUsers)
+    .post(createUser);
 
-
-
+app
+    .route('/api/v1/users/:id')
+    .get(getUserByID)
+    .patch(updateUser)
+    .delete(deleteUser);
 
 
 
