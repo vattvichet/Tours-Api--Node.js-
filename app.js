@@ -1,6 +1,10 @@
 const express = require('express');
 const fs = require('fs');
+const morgan = require('morgan');
+
 const app = express();
+
+app.use(morgan('dev'));
 app.use(express.json())
 
 
@@ -44,6 +48,7 @@ const getTourByID = (req, res) => {
     }
     res.status(200).json({
         status: 'success',
+        requestTime: req.requestTime,
         data: {
             tour: tourInfoByID,
         }
@@ -95,6 +100,12 @@ const deleteTour = (req, res) => {
 app.route('/api/v1/tours')
     .get(getAllTours)
     .post(createTour);
+
+//creating middleware
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    next();
+});
 
 app.route('/api/v1/tours/:id')
     .get(getTourByID)
