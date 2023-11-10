@@ -3,12 +3,15 @@ const toursController = require('../controllers/toursController');
 
 const router = express.Router();
 
-router.param('id', toursController.checkValidID );
+//Will be checking if if param id is valid
+router.param('id', toursController.checkValidID);
+
 
 router
     .route('/')
     .get(toursController.getAllTours)
-    .post(toursController.createTour);
+    .post(toursController.checkBody, toursController.createTour);
+
 
 router
     .route('/:id')
