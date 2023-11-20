@@ -3,7 +3,7 @@ const Tour = require('./../models/tourModel');
 exports.getAllTours = async (req, res) => {
   try {
     //BUILD QUERY
-    // 1) Filtering
+    // 1.A) Filtering
     const queryObject = { ...req.query };
     const excludedField = ['page', 'sort', 'limit', 'fields']; //ignore these 4 keyword
     excludedField.forEach((el) => delete queryObject[el]);
@@ -11,12 +11,22 @@ exports.getAllTours = async (req, res) => {
     // const tours = await Tour.find(queryObject);
 
     console.log(req.query);
-    // 2) ADVANCE Filtering
+    // 1.B) ADVANCE Filtering
     let queryStr = JSON.stringify(queryObject);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     console.log(JSON.parse(queryStr));
-    const query = Tour.find(JSON.parse(queryStr));
+    let query = Tour.find(JSON.parse(queryStr));
 
+    if (req.query.sort) {
+      //THe url can't be having space so we user ",". then replace it with space
+      //and use in sort function
+      const sortBy = req.query.sort.split(',').join(' ');
+      console.log(sortBy);
+      query = query.sort(sortBy);
+    } else {
+      //if user doesn't query with sort, the result will be sorted by createdAt itself
+      query = query.sort('-createdAt');
+    }
     //EXECUTE Query
     const tours = await query;
 
