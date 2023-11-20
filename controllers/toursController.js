@@ -17,6 +17,7 @@ exports.getAllTours = async (req, res) => {
     console.log(JSON.parse(queryStr));
     let query = Tour.find(JSON.parse(queryStr));
 
+    // 2) Sorting
     if (req.query.sort) {
       //THe url can't be having space so we user ",". then replace it with space
       //and use in sort function
@@ -26,6 +27,15 @@ exports.getAllTours = async (req, res) => {
     } else {
       //if user doesn't query with sort, the result will be sorted by createdAt itself
       query = query.sort('-createdAt');
+    }
+
+    //Field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v'); //excluding __v from query result
+      // query = query.select('-__v -createdAt'); //Another way of excluding
     }
     //EXECUTE Query
     const tours = await query;
