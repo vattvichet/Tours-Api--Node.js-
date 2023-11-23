@@ -12,9 +12,13 @@ class APIFeatures {
     // 1.B) ADVANCE Filtering
     let queryStr = JSON.stringify(queryObject);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    console.log('queryStr', queryStr);
+    console.log('JSON.parse(queryStr)', JSON.parse(queryStr));
 
     this.query = this.query.find(JSON.parse(queryStr));
-    console.log(this);
+    console.log('QQ', this);
+    console.log('this.query', this.query);
+
     return this;
   }
 
@@ -32,6 +36,7 @@ class APIFeatures {
     }
     return this;
   }
+
   limitFields() {
     //Field limiting
     console.log('limiting');
