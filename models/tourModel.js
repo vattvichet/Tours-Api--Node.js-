@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const tourSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -15,7 +14,6 @@ const tourSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'A tour must have a Max Group Size'],
   },
-
   difficulty: {
     type: String,
     trim: true,
