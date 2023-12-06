@@ -58,6 +58,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secreteTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -66,6 +70,7 @@ const tourSchema = new mongoose.Schema(
 );
 
 //virtual property
+// (THE VALUE ONLY SHOW WHEN REQUEST BUT ARE NOT STORED IN THR DB)
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
@@ -80,6 +85,11 @@ tourSchema.pre('save', function (next) {
 //   console.log(doc);
 //   next();
 // });
+
+tourSchema.pre('find', function (next) {
+  this.find({ secreteTour: { $ne: true || false } });
+  next();
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
