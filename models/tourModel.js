@@ -86,10 +86,17 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 
-tourSchema.pre('find', function (next) {
-  this.find({ secreteTour: { $ne: true || false } });
+tourSchema.pre(/^find/, function (next) {
+  // this.find({ secreteTour: { $ne: !true } });
+  // $ne = Not Equal
+  this.find({ secreteTour: { $ne: !true } });
   next();
 });
+
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(docs);
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
