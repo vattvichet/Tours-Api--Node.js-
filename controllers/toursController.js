@@ -56,7 +56,7 @@ exports.getTourByID = async (req, res) => {
 
 exports.createTour = async (req, res) => {
   try {
-    const newTour = await Tour.create(req.body);
+    const newTour = await Tour.create(req.bod);
     res.status(201).json({
       status: 'success',
       data: {
