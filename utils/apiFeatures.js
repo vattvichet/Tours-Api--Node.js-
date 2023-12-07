@@ -5,19 +5,13 @@ class APIFeatures {
   }
 
   filter() {
-    console.log(this.queryString);
     const queryObject = { ...this.queryString };
     const excludedField = ['page', 'sort', 'limit', 'fields']; //ignore these 4 keyword
     excludedField.forEach((el) => delete queryObject[el]);
     // 1.B) ADVANCE Filtering
     let queryStr = JSON.stringify(queryObject);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    console.log('queryStr', queryStr);
-    console.log('JSON.parse(queryStr)', JSON.parse(queryStr));
-
     this.query = this.query.find(JSON.parse(queryStr));
-    console.log('QQ', this);
-    console.log('this.query', this.query);
 
     return this;
   }
@@ -28,7 +22,6 @@ class APIFeatures {
       //THe url can't be having space so we user ",". then replace it with space
       //and use in sort function
       const sortBy = this.queryString.sort.split(',').join(' ');
-      console.log(sortBy);
       this.query = this.query.sort(sortBy);
     } else {
       //if user doesn't query with sort, the result will be sorted by createdAt itself
@@ -39,9 +32,9 @@ class APIFeatures {
 
   limitFields() {
     //Field limiting
-    console.log('limiting');
     if (this.queryString.fields) {
       const fields = this.queryString.fields.split(',').join(' ');
+      // this.query = this.query.select(['name', 'price', 'difficulty']);
       this.query = this.query.select(fields);
     } else {
       this.query = this.query.select('-__v'); //excluding __v from query result
@@ -51,10 +44,13 @@ class APIFeatures {
   }
 
   paginate() {
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 10;
-    const skip = (page - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);
+    if ('limit' in this.queryString || 'page' in this.queryString) {
+      const page = this.queryString.page * 1 || 1;
+      const limit = this.queryString.limit * 1 || 10;
+      const skip = (page - 1) * limit;
+      this.query = this.query.skip(skip).limit(limit);
+      return this;
+    }
     return this;
   }
 }
