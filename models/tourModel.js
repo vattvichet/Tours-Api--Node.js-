@@ -89,14 +89,25 @@ tourSchema.pre('save', function (next) {
 tourSchema.pre(/^find/, function (next) {
   // this.find({ secreteTour: { $ne: !true } });
   // $ne = Not Equal
-  this.find({ secreteTour: { $ne: !true } });
+  this.find({ secreteTour: { $ne: true } });
+
+  //Only show IF ratingAverage != 4.5
+  // this.find({ ratingAverage: { $ne: 4.5 } });
   next();
 });
 
-// tourSchema.post(/^find/, function (docs, next) {
-//   console.log(docs);
-//   next();
-// });
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(docs);
+  next();
+});
+
+// AGGREGATION MIDDLEWARE
+tourSchema.pre('aggregate', function (next) {
+  //HIDE the tour IF secreteTour != TRUE
+  this.pipeline().unshift({ $match: { secreteTour: { $ne: true } } });
+  console.log(this);
+  next();
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
