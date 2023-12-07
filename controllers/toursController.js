@@ -56,7 +56,7 @@ exports.getTourByID = async (req, res) => {
 
 exports.createTour = async (req, res) => {
   try {
-    const newTour = await Tour.create(req.bod);
+    const newTour = await Tour.create(req.body);
     res.status(201).json({
       status: 'success',
       data: {
@@ -64,6 +64,7 @@ exports.createTour = async (req, res) => {
       },
     });
   } catch (err) {
+    console.log(err);
     res.status(404).json({
       status: 'fail',
       message: err,
