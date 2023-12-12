@@ -9,10 +9,10 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    trim: true,
-    require: [true, 'Email is required!'],
-    lowerCase: true,
 
+    require: [true, 'Email is required!'],
+    lowercase: true,
+    trim: true,
     validate: [validator.isEmail, 'Please provide a valid email!'],
   },
   photo: String,
