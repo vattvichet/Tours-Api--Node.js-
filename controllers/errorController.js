@@ -6,7 +6,7 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const value = err.keyValue.name;
+  const value = err.keyValue.name ?? err.keyValue.email;
   console.log('err.keyValue.name: ', err.keyValue.name);
   const message = `Duplicated field value: ${value}. Please use another one`;
   return new AppError(message, 400);
@@ -52,18 +52,19 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
     //Handle Invalid ID
     if (err.name === 'CastError') {
-      console.log('TRUE #########################');
       error = handleCastErrorDB(error);
+      sentErrorProd(error, res);
     }
     //Handle Duplicated Fields
     if (err.code === 11000) {
       console.log('err.code', err.code);
-      error = handleDuplicateFieldsDB(err);
+      error = handleDuplicateFieldsDB(error);
+      sentErrorProd(error, res);
     }
     //Handle Validations Error
-    if ((err.name = 'ValidationError')) {
-      error = handleValidationErrorDB(err);
+    if ((err.name = 'ValidationError' && err.code !== 11000)) {
+      error = handleValidationErrorDB(error);
+      sentErrorProd(error, res);
     }
-    sentErrorProd(error, res);
   }
 };
